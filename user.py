@@ -9,10 +9,6 @@ import yaml
 class User(object):
     """Represents a telegram user.
 
-        Note:
-            If the optional arguments are passed, the user object
-            will be saved to the configuration file.
-
         Args:
             user_id (str): The user's unique id.
             first_name (Optional[str]): The user's fist_name.
@@ -20,7 +16,7 @@ class User(object):
             group (Optional[str]): The user's group.
     """
 
-    CONFIG_PATH = "users.yml"
+    CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".users.yml")
 
     def __init__(self, user_id, first_name=None, last_name=None, group=None):
         self.__id = user_id
@@ -28,9 +24,6 @@ class User(object):
         self.__last_name = last_name
         self.__group = group
         self.__config = None
-
-        if self.__fist_name and self.__last_name and self.__group:
-            self.__save()
 
     def __load_config(self):
         """Loads the configuration file.
@@ -61,13 +54,19 @@ class User(object):
                 yaml.dump(self.__config)
             )
 
-    def __save(self):
+    def save(self):
         """Saves the user's data.
 
             Saves the users's data to the configuration
             file.
+
+            Returns:
+                bool: True if the user was saved, otherwise False
         """
         self.__load_config()
+
+        if self.__fist_name and self.__last_name and self.__group:
+            return False
 
         if not self.__config.get(self.__group):
             self.__config[self.__group] = {}
@@ -78,7 +77,7 @@ class User(object):
         self.__config[self.__group][self.__id]["first_name"] = self.__first_name
         self.__config[self.__group][self.__id]["last_name"] = self.__last_name
         self.__save_config()
-
+        return True
 
     def has_access(self, group):
         """Checks if the user is in given group.
@@ -86,13 +85,32 @@ class User(object):
             Returns True if given user has access rights
             to the given group.
 
-            Params:
+            Args:
                 group (str): The group's name.
 
             Returns:
                 bool: True if user is in the given group, otherwise False.
         """
-        return self.__id in getattr(self, group)
+        if not getattr(self, group) and not getattr(self, "admins"):
+            return False
+
+        is_in_group = self.__id in getattr(self, group)
+        is_admin = self.__id in getattr(self, "admins")
+        return is_in_group or is_admin
+
+    def group_empty(self, group):
+        """Checks if the given group contains any users.
+
+            Checks if there's at least one user, which is member of the
+            given group.
+
+            Returns:
+                bool: True if at least one user is in the given group.
+
+        """
+        if not getattr(self, group):
+            return True
+        return False
 
     def __getattr__(self, name):
         """Returns a configuration attribute.
@@ -100,12 +118,13 @@ class User(object):
             Returns the configuration attribute value from
             the given key.
 
-            Params:
+            Args:
                 name (str): The attribute's name.
 
             Returns:
-                str: The attribute's value if it exists, otherwise an empty str.
+                str: The attribute's value if it exists,
+                    otherwise an empty str.
 
         """
         self.__load_config()
-        return self.__config.get(name)
+        return self.__config.get(name, {})
