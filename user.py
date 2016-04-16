@@ -16,7 +16,10 @@ class User(object):
             group (Optional[str]): The user's group.
     """
 
-    CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".users.yml")
+    CONFIG_PATH = os.path.join(
+        os.path.expanduser("~"),
+        ".users.yml"
+    )
 
     def __init__(self, user_id, first_name=None, last_name=None, group=None):
         self.__id = user_id
@@ -71,11 +74,10 @@ class User(object):
         if not self.__config.get(self.__group):
             self.__config[self.__group] = {}
 
-        if not self.__config[self.__group].get(self.__id):
-            self.__config[self.__group][self.__id] = {}
-
-        self.__config[self.__group][self.__id]["first_name"] = self.__first_name
-        self.__config[self.__group][self.__id]["last_name"] = self.__last_name
+        user_config = {}
+        user_config["first_name"] = self.__first_name
+        user_config["last_name"] = self.__last_name
+        self.__config[self.__group][self.__id] = user_config
         self.__save_config()
         return True
 
