@@ -1,2 +1,2 @@
-# private-telegram-bot
-Python module to write private telegram bots with user/group permissions.
+# ownbot
+Python module to create private telegram bots.

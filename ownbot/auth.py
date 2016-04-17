@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Provides decorator functions for user authentication.
 """
-from user import User
+from ownbot.user import User
 
 def requires_usergroup(group):
     """Checks if the user has access to the decorated function.
@@ -45,8 +45,6 @@ def assign_first_to(group):
                 last_name=update.message.from_user.last_name,
                 group=group
             )
-            # Save the user as an admin if there isn't already
-            # an admin.
             if user.group_empty(group):
                 user.save()
                 message = "Hello {0}! "\

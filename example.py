@@ -8,7 +8,7 @@
 
 from telegram.ext import Updater
 
-from auth import requires_usergroup, assign_first_to
+from ownbot.auth import requires_usergroup, assign_first_to
 
 TOKEN = open("token.txt").read().strip()
 
@@ -17,7 +17,7 @@ TOKEN = open("token.txt").read().strip()
 # to the admins group.
 @assign_first_to("admins")
 # If a user wants to execute the '/start' command he has to be
-# a member of the 'users' group. Oherwise the decorator will not
+# a member of the 'users' group. Otherwise the decorator will not
 # execute the handler function.
 @requires_usergroup("users")
 def start_handler(bot, update):
