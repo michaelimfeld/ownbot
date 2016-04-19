@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-    Provides the user class.
+    Provides the ownbot User class.
 """
-import os
-import yaml
+from ownbot.usermanager import UserManager
 
 
 class User(object):
@@ -16,46 +15,12 @@ class User(object):
             group (Optional[str]): The user's group.
     """
 
-    CONFIG_PATH = os.path.join(
-        os.path.expanduser("~"),
-        ".users.yml"
-    )
-
     def __init__(self, user_id, first_name=None, last_name=None, group=None):
         self.__id = user_id
         self.__first_name = first_name
         self.__last_name = last_name
         self.__group = group
-        self.__config = None
-
-    def __load_config(self):
-        """Loads the configuration file.
-
-            Loads all usergroups and users as a dict from
-            the configuration file into the config attribute.
-        """
-        if not os.path.exists(self.CONFIG_PATH):
-            self.__config = {}
-            return
-
-        with open(self.CONFIG_PATH, "r") as config_file:
-            config = yaml.load(config_file)
-            if not config:
-                self.__config = {}
-                return
-
-            self.__config = config
-
-    def __save_config(self):
-        """Saves the configuration.
-
-            Saves the config attribute to the configuration
-            file.
-        """
-        with open(self.CONFIG_PATH, "w+") as config_file:
-            config_file.write(
-                yaml.dump(self.__config)
-            )
+        self.__usermanager = UserManager()
 
     def save(self):
         """Saves the user's data.
@@ -66,19 +31,19 @@ class User(object):
             Returns:
                 bool: True if the user was saved, otherwise False
         """
-        self.__load_config()
+        config = self.__usermanager.users
 
         if self.__fist_name and self.__last_name and self.__group:
             return False
 
-        if not self.__config.get(self.__group):
-            self.__config[self.__group] = {}
+        if not config.get(self.__group):
+            config[self.__group] = {}
 
         user_config = {}
         user_config["first_name"] = self.__first_name
         user_config["last_name"] = self.__last_name
-        self.__config[self.__group][self.__id] = user_config
-        self.__save_config()
+        config[self.__group][self.__id] = user_config
+        self.__usermanager.users = config
         return True
 
     def has_access(self, group):
@@ -128,5 +93,4 @@ class User(object):
                     otherwise an empty str.
 
         """
-        self.__load_config()
-        return self.__config.get(name, {})
+        return self.__usermanager.users.get(name, {})
