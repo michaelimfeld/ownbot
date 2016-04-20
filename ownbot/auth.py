@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Provides decorator functions for user authentication.
 """
+from telegram import Bot
 from ownbot.user import User
 
 def requires_usergroup(group):
@@ -16,11 +17,19 @@ def requires_usergroup(group):
             func: The decorater function.
     """
     def decorate(func):
-        def call(bot, update):
+        def call(*args, **kwargs):
+            offset = 0
+            # Set offset to 1 if first argument is not type of
+            # telegram.Bot.
+            if not isinstance(args[0], Bot):
+                offset = 1
+
+            update = args[1 + offset]
+
             user = User(update.message.from_user.id)
             if not user.has_access(group):
                 return
-            result = func(bot, update)
+            result = func(*args, **kwargs)
             return result
         return call
     return decorate
@@ -38,7 +47,16 @@ def assign_first_to(group):
             func: The decorater function.
     """
     def decorate(func):
-        def call(bot, update):
+        def call(*args, **kwargs):
+            offset = 0
+            # Set offset to 1 if first argument is not type of
+            # telegram.Bot.
+            if not isinstance(args[0], Bot):
+                offset = 1
+
+            bot = args[0 + offset]
+            update = args[1 + offset]
+
             user = User(
                 update.message.from_user.id,
                 first_name=update.message.from_user.first_name,
@@ -55,7 +73,7 @@ def assign_first_to(group):
                         )
                 bot.sendMessage(chat_id=update.message.chat_id, text=message)
 
-            result = func(bot, update)
+            result = func(*args, **kwargs)
             return result
         return call
     return decorate

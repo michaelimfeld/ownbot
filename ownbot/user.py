@@ -58,11 +58,11 @@ class User(object):
             Returns:
                 bool: True if user is in the given group, otherwise False.
         """
-        if not getattr(self, group) and not getattr(self, "admins"):
+        if not getattr(self, group) and not getattr(self, "admin"):
             return False
 
         is_in_group = self.__id in getattr(self, group)
-        is_admin = self.__id in getattr(self, "admins")
+        is_admin = self.__id in getattr(self, "admin")
         return is_in_group or is_admin
 
     def group_empty(self, group):
