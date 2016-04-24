@@ -2,10 +2,6 @@
 # pylint: disable=missing-docstring
 
 from setuptools import setup
-from pip.req import parse_requirements
-
-install_reqs = parse_requirements("requirements.txt", session=False)
-reqs = [str(ir.req) for ir in install_reqs]
 
 setup(
     name="ownbot",
@@ -21,7 +17,10 @@ setup(
     download_url="https://github.com/michaelimfeld/ownbot",
     packages=["ownbot"],
     package_data={"": ["*.md"]},
-    install_requires=reqs,
+    install_requires=[
+        "python-telegram-bot==4.0rc1",
+        "PyYAML"
+    ],
     include_package_data=True,
     classifiers=[
         "Development Status :: 4 - Beta",
