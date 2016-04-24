@@ -1,4 +1,7 @@
 # ownbot
+
+[![Build Status](https://travis-ci.org/michaelimfeld/ownbot.svg?branch=master)](https://travis-ci.org/michaelimfeld/ownbot)
+
 > Easy to use python module to create private telegram bots.
 
 ## Install
@@ -32,6 +35,13 @@ def start_handler(bot, update):
 
 So that means only the first user who sends the '/start' command has access to that handler function.
 To add users to groups you can edit the users file in ~/.ownbot/users.yml. It is planned to add admin commands, which should allow admins to manage users directly by talking to the bot.
+
+```
+admin:
+  12345678: {first_name: !!python/unicode 'First', last_name: !!python/unicode 'User'}
+newgroup:
+  87654321: {first_name: 'Manually', last_name: 'Added'}
+```
 
 Obviously if a user is in the `admin` group he has also access to functions which are protected with the `@requires_usergroup("user")` decorator. If a group passed to this decorator does not already exist, it will be created.
 
