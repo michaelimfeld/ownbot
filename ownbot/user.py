@@ -9,16 +9,14 @@ class User(object):
     """Represents a telegram user.
 
         Args:
-            user_id (str): The user's unique id.
-            first_name (Optional[str]): The user's fist_name.
-            last_name (Optional[str]): The user's last_name.
+            name (str): The user's unique telegram username.
+            user_id (str): The user's unique telegram id.
             group (Optional[str]): The user's group.
     """
 
-    def __init__(self, user_id, first_name=None, last_name=None, group=None):
+    def __init__(self, name, user_id, group=None):
+        self.__name = name
         self.__id = user_id
-        self.__first_name = first_name
-        self.__last_name = last_name
         self.__group = group
         self.__usermanager = UserManager()
 
@@ -31,19 +29,11 @@ class User(object):
             Returns:
                 bool: True if the user was saved, otherwise False
         """
-        config = self.__usermanager.users
-
-        if self.__fist_name and self.__last_name and self.__group:
+        if not self.__group:
             return False
 
-        if not config.get(self.__group):
-            config[self.__group] = {}
-
-        user_config = {}
-        user_config["first_name"] = self.__first_name
-        user_config["last_name"] = self.__last_name
-        config[self.__group][self.__id] = user_config
-        self.__usermanager.users = config
+        self.__usermanager.add_user(
+            self.__name, self.__group, user_id=self.__id)
         return True
 
     def has_access(self, group):
@@ -58,12 +48,14 @@ class User(object):
             Returns:
                 bool: True if user is in the given group, otherwise False.
         """
-        if not getattr(self, group) and not getattr(self, "admin"):
-            return False
+        is_in_group = self.__usermanager.is_in_group(self.__id, group)
+        is_admin = self.__usermanager.is_in_group(self.__id, "admin")
 
-        is_in_group = self.__id in getattr(self, group)
-        is_admin = self.__id in getattr(self, "admin")
-        return is_in_group or is_admin
+        if not is_in_group and not is_admin:
+            return self.__usermanager.verify_user(
+                self.__id, self.__name, group)
+
+        return True
 
     def group_empty(self, group):
         """Checks if the given group contains any users.
@@ -93,4 +85,6 @@ class User(object):
                     otherwise an empty str.
 
         """
-        return self.__usermanager.users.get(name, {})
+        if not self.__usermanager.config.get(self.__group):
+            return []
+        return self.__usermanager.config.get(self.__group).get("users")

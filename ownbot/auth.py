@@ -26,7 +26,9 @@ def requires_usergroup(group):
 
             update = args[1 + offset]
 
-            user = User(update.message.from_user.id)
+            user = User(
+                update.message.from_user.name,
+                update.message.from_user.id)
             if not user.has_access(group):
                 return
             result = func(*args, **kwargs)
@@ -58,10 +60,9 @@ def assign_first_to(group):
             update = args[1 + offset]
 
             user = User(
-                update.message.from_user.id,
-                first_name=update.message.from_user.first_name,
-                last_name=update.message.from_user.last_name,
-                group=group
+                update.message.from_user.name,
+                user_id=update.message.from_user.id,
+                group=group,
             )
             if user.group_empty(group):
                 user.save()
