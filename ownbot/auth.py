@@ -67,7 +67,7 @@ def assign_first_to(group):
             if user.group_empty(group):
                 user.save()
                 message = "Hello {0}! "\
-                        "You have been added to the {1} group."\
+                        "You have been added to the '{1}' group."\
                         .format(
                             update.message.from_user.first_name,
                             group

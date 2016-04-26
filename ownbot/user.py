@@ -48,14 +48,20 @@ class User(object):
             Returns:
                 bool: True if user is in the given group, otherwise False.
         """
-        is_in_group = self.__usermanager.is_in_group(self.__id, group)
-        is_admin = self.__usermanager.is_in_group(self.__id, "admin")
+        is_in_group = self.__usermanager.user_is_in_group(group,
+                                                          user_id=self.__id)
+        is_admin = self.__usermanager.user_is_in_group("admin",
+                                                       user_id=self.__id)
 
-        if not is_in_group and not is_admin:
-            return self.__usermanager.verify_user(
-                self.__id, self.__name, group)
+        if is_in_group or is_admin:
+            self.save()
+            return True
 
-        return True
+        is_admin = self.__usermanager.verify_user(self.__id,
+                                                  self.__name, "admin")
+        is_in_group = self.__usermanager.verify_user(self.__id,
+                                                     self.__name, group)
+        return is_admin or is_in_group
 
     def group_empty(self, group):
         """Checks if the given group contains any users.

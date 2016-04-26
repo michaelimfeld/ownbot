@@ -9,6 +9,7 @@
 from telegram.ext import Updater, CommandHandler
 
 from ownbot.auth import requires_usergroup, assign_first_to
+from ownbot.admincommands import AdminCommands
 
 TOKEN = open("token.txt").read().strip()
 
@@ -41,6 +42,7 @@ def main():
     updater = Updater(TOKEN)
     dispatcher = updater.dispatcher
     dispatcher.addHandler(CommandHandler("start", start_handler))
+    AdminCommands(dispatcher)
 
     updater.start_polling()
 

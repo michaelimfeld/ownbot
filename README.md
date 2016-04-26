@@ -4,8 +4,10 @@
 
 > Easy to use python module to create private telegram bots.
 
-## Install
+## How It Works
+Ownbot saves new users added by Telegram username as unverified users. On first contact, when the user sends his first message to the bot, ownbot will store the user with his unique id as a verified user. A verified user will from now on always have access to his group even if he changes his username. The authorization checks are done only on the unique Telegram `user_id`! Sound good right?
 
+## Install
 ```shell
 git clone https://github.com/michaelimfeld/ownbot.git
 pip install .
@@ -15,34 +17,41 @@ pip install .
 
 Ownbot provides some cool decorators to protect your command handler functions from unauthorized users.
 At the moment there are two decorators:
-
 ```python
 from ownbot.auth import requires_usergroup, assign_first_to
+(...)
 
-# The first client who sends the '/start' command will be added
-# to the admin group.
 @assign_first_to("admin")
-# If a user wants to execute the '/start' command he has to be
-# a member of the 'user' group. Otherwise the decorator will not
-# execute the handler function.
 @requires_usergroup("user")
 def start_handler(bot, update):
-    """Handles the command '/start'.
-        Sends a Hello World message to the client.
-    """
     bot.sendMessage(chat_id=update.message.chat_id, text="Hello World")
 ```
 
-So that means only the first user who sends the '/start' command has access to that handler function.
-To add users to groups you can edit the users file in ~/.ownbot/users.yml. It is planned to add admin commands, which should allow admins to manage users directly by talking to the bot.
+The `assign_first_to` decorator allows adding the first user who invokes the handler method to the group specified. (`admin` in this case).
 
-```
-admin:
-  12345678: {first_name: !!python/unicode 'First', last_name: !!python/unicode 'User'}
-newgroup:
-  87654321: {first_name: 'Manually', last_name: 'Added'}
+The second decorator `requires_usergroup` defines which usergroups will have permission to access the handler command. (`user` in this case)
+
+Obviously if a user is in the `admin` group he has also access to functions which are protected with the `@requires_usergroup("user")` decorator. If a group passed to this decorator does not already exist, it will be automatically created.
+
+## Admin Commands
+
+The admin commands can be enabled by simply instantiating the `AdminCommands`
+class and passing over the dispatcher to register the admin commands.
+
+```python
+from ownbot.admincommands import AdminCommands
+(...)
+updater = Updater(TOKEN)
+dispatcher = updater.dispatcher
+AdminCommands(dispatcher)
 ```
 
-Obviously if a user is in the `admin` group he has also access to functions which are protected with the `@requires_usergroup("user")` decorator. If a group passed to this decorator does not already exist, it will be created.
+If the admin commands are enabled, a user who is in the `admin` group is able to perform the following actions:
+
+| Command  | Arguments      | Description                  |
+|----------|----------------|------------------------------|
+| /users   | -              | Lists all registered users.  |
+| /adduser | `user` `group` | Adds a user to a group.      |
+| /rmuser  | `user` `group` | Removes a user from a group. |
 
 Work in progress ...
