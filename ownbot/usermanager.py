@@ -60,6 +60,29 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
                 yaml.dump(self.__config)
             )
 
+    def __clean_config(self, group=None):
+        """Removes empty values of keys in config.
+
+            Removes all keys from the config which have
+            empty lists or dicts as values.
+
+            Args:
+                group (Optional[str]): The group key to clean.
+        """
+        verified_present = self.VERIFIED in self.__config[group]
+        unverified_present = self.UNVERIFIED in self.__config[group]
+
+        if group:
+            if unverified_present and not self.__config[group][self.UNVERIFIED]:
+                self.__config[group].pop(self.UNVERIFIED, None)
+
+            if verified_present and not self.__config[group][self.VERIFIED]:
+                self.__config[group].pop(self.VERIFIED, None)
+
+        if not self.__config[group]:
+            self.__config.pop(group, None)
+
+
     @property
     def config(self):
         """
@@ -76,14 +99,21 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         self.__config = config
         self.__save_config()
 
-    def is_in_group(self, user_id, group):
+    def user_is_in_group(self, group, user_id=None, username=None):
         """
             Checks if a user is in a specific
             group.
 
             Args:
-                user_id (str): The user's unique id.
                 group (str): The group to look for the user.
+                user_id (Optional[str]): The user's unique id.
+                username (Optional[str]): The user's name.
+
+            Note:
+                If the user_id is passed, only the verified users
+                will be checked.
+                If the username is passed instead, the verified and the
+                unverified users will be checked.
 
             Returns:
                 bool: True if the user id was found in
@@ -91,15 +121,34 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         """
         self.__load_config()
 
-        if group not in self.__config or \
-           self.VERIFIED not in self.__config[group]:
+        if group not in self.__config or (user_id is None and username is None):
             return False
 
-        usr_in_group = self.__config[group][self.VERIFIED][:] = [
-            usr for usr in self.__config[group][self.VERIFIED]
-            if usr.get("id") == user_id
-        ]
-        return bool(usr_in_group)
+        verified_present = self.VERIFIED in self.__config[group]
+        unverified_present = self.UNVERIFIED in self.__config[group]
+
+        if user_id:
+            if not verified_present:
+                return False
+
+            usr_in_group = [
+                usr for usr in self.__config[group][self.VERIFIED]
+                if usr.get("id") == user_id
+            ]
+            return bool(usr_in_group)
+
+        usr_in_group = []
+        if verified_present:
+            usr_in_group = [
+                usr for usr in self.__config[group][self.VERIFIED]
+                if usr.get("username") == username
+            ]
+
+        if bool(usr_in_group):
+            return True
+
+        return unverified_present \
+                and username in self.__config[group][self.UNVERIFIED]
 
     def verify_user(self, user_id, username, group):
         """Verifies a user.
@@ -131,6 +180,8 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
                 "username": username
             }
         )
+        self.__clean_config(group=group)
+        self.__save_config()
         return True
 
 
@@ -180,3 +231,36 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         self.__save_config()
         return True
 
+    def rm_user(self, username, group):
+        """
+            Removes a user from a group.
+
+            Args:
+                username (str): the user's name.
+                group (str): The user's group.
+
+            Returns:
+                bool: True if user was removed, otherwise False.
+        """
+        self.__load_config()
+
+        if group not in self.__config:
+            return False
+
+        if not self.user_is_in_group(group, username=username):
+            return False
+
+        if self.VERIFIED in self.__config[group]:
+            self.__config[group][self.VERIFIED][:] = [
+                usr for usr in self.__config[group][self.VERIFIED]
+                if usr.get("username") != username
+            ]
+
+        if self.UNVERIFIED in self.__config[group] \
+           and username in self.__config[group][self.UNVERIFIED]:
+            self.__config[group][self.UNVERIFIED].remove(username)
+
+        self.__clean_config(group=group)
+        self.__save_config()
+
+        return True
