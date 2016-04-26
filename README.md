@@ -5,7 +5,7 @@
 > Easy to use python module to create private telegram bots.
 
 ## How It Works
-Ownbot saves new users added by Telegram username as unverified users. On first contact, when the user sends his first message to the bot, ownbot will store the user with his unique id as a verified user. A verified user will from now on always have access to his group even if he changes his username. The authorization checks are done only on the unique Telegram `user_id`! Sound good right?
+Ownbot saves new users added by Telegram username as unverified users. On first contact, when the user sends his first message to the bot, ownbot will store the user with his unique id as a verified user. A verified user will from now on always have access to his group even if he changes his username. The authorization checks are done only on the unique Telegram `user_id`! Sounds good right?
 
 ## Install
 ```shell
@@ -13,7 +13,7 @@ git clone https://github.com/michaelimfeld/ownbot.git
 pip install .
 ```
 
-## Usage
+## Get Started
 
 Ownbot provides some cool decorators to protect your command handler functions from unauthorized users.
 At the moment there are two decorators:
@@ -53,5 +53,6 @@ If the admin commands are enabled, a user who is in the `admin` group is able to
 | /users   | -              | Lists all registered users.  |
 | /adduser | `user` `group` | Adds a user to a group.      |
 | /rmuser  | `user` `group` | Removes a user from a group. |
+
 
 Work in progress ...
