@@ -48,11 +48,11 @@ AdminCommands(dispatcher)
 
 If the admin commands are enabled, a user who is in the `admin` group is able to perform the following actions:
 
-| Command  | Arguments      | Description                  |
-|----------|----------------|------------------------------|
-| /users   | -              | Lists all registered users.  |
-| /adduser | `user` `group` | Adds a user to a group.      |
-| /rmuser  | `user` `group` | Removes a user from a group. |
-
+| Command    | Arguments  | Description                         |
+|------------|------------|-------------------------------------|
+| /adminhelp | -          | Shows a list of available commands. |
+| /users     | -          | Shows all registered users.         |
+| /adduser   | user group | Adds a user to a group.             |
+| /rmuser    | user group | Removes a user from a group.        |
 
 Work in progress ...
