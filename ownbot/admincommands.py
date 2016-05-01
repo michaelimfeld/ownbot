@@ -6,10 +6,9 @@ from telegram.parsemode import ParseMode
 from telegram.ext import CommandHandler
 
 from ownbot.auth import requires_usergroup
-from ownbot.user import User
 from ownbot.usermanager import UserManager
 
-class AdminCommands(object):
+class AdminCommands(object):  # pylint: disable=too-few-public-methods
     """
         Provides admin command handlers for user/group
         management.
@@ -40,13 +39,27 @@ class AdminCommands(object):
             CommandHandler("rmuser", self.__rm_user, pass_args=True)
         )
 
-    def __admin_help(self, bot, update):
+
+    @staticmethod
+    @requires_usergroup("admin")
+    def __admin_help(bot, update):
         """Command handler function for `adminhelp` command.
 
             Sends a list of all available commands to the
             client.
+
+            Args:
+                bot (telegram.Bot): The bot object.
+                update (telegram.Update): The sent update.
         """
-        print(update.message.text)
+        message = """
+*Available Admin Commands*
+/users - Lists all registered users.
+/adduser - Adds a user to a group.
+/rmuser - Removes a user from a group.
+        """
+        bot.sendMessage(chat_id=update.message.chat_id, text=message,
+                        parse_mode=ParseMode.MARKDOWN)
 
     @staticmethod
     @requires_usergroup("admin")
