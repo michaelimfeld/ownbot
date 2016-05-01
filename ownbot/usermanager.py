@@ -99,6 +99,67 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         self.__config = config
         self.__save_config()
 
+    def userid_is_verified_in_group(self, group, user_id):
+        """
+            Checks if a user id is in a group and
+            verified in that group.
+
+            Args:
+                group (str): The group to look for the user.
+                user_id (str): The user's unique id.
+
+            Returns:
+                bool: True if the user was found in the
+                    given group as verified, otherwise False.
+        """
+        self.__load_config()
+
+        user_in_group = [
+            usr for usr in self.__config.get(group, {}).get(self.VERIFIED, [])
+            if usr.get("id") == user_id
+        ]
+
+        return bool(user_in_group)
+
+    def username_is_verified_in_group(self, group, username):
+        """
+            Checks if a username is in a group and
+            verified in that group.
+
+            Args:
+                group (str): The group to look for the user.
+                username (str): The user's name.
+
+            Returns:
+                bool: True if the user was found in the
+                    given group as verified, otherwise False.
+        """
+        self.__load_config()
+
+        user_in_group = [
+            usr for usr in self.__config.get(group, {}).get(self.VERIFIED, [])
+            if usr.get("username") == username
+        ]
+
+        return bool(user_in_group)
+
+    def user_is_unverified_in_group(self, group, username):
+        """
+            Checks if a user is in a group and
+            verified in that group.
+
+            Args:
+                group (str): The group to look for the user.
+                username (str): The user's name.
+
+            Returns:
+                bool: True if the user was found in the
+                    given group as verified, otherwise False.
+        """
+        self.__load_config()
+        unverified_users = self.__config.get(group, {}).get(self.UNVERIFIED, [])
+        return username in unverified_users
+
     def user_is_in_group(self, group, user_id=None, username=None):
         """
             Checks if a user is in a specific
@@ -124,31 +185,13 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         if group not in self.__config or (user_id is None and username is None):
             return False
 
-        verified_present = self.VERIFIED in self.__config[group]
-        unverified_present = self.UNVERIFIED in self.__config[group]
-
         if user_id:
-            if not verified_present:
-                return False
+            return self.userid_is_verified_in_group(group, user_id)
 
-            usr_in_group = [
-                usr for usr in self.__config[group][self.VERIFIED]
-                if usr.get("id") == user_id
-            ]
-            return bool(usr_in_group)
+        is_in_verified = self.username_is_verified_in_group(group, username)
+        is_in_unverified = self.user_is_unverified_in_group(group, username)
 
-        usr_in_group = []
-        if verified_present:
-            usr_in_group = [
-                usr for usr in self.__config[group][self.VERIFIED]
-                if usr.get("username") == username
-            ]
-
-        if bool(usr_in_group):
-            return True
-
-        return unverified_present \
-                and username in self.__config[group][self.UNVERIFIED]
+        return is_in_verified or is_in_unverified
 
     def verify_user(self, user_id, username, group):
         """Verifies a user.
@@ -196,7 +239,7 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
                 user_id (Optional[str]): The user's id.
 
             Note:
-                Adding a user or adding a user to a group
+                Adding a user and adding a user to a group
                 is the same.
 
                 If the optional user_id is passed, the user
@@ -208,9 +251,16 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
                     group, otherwise False.
         """
         self.__load_config()
-        if not group in self.__config:
+
+        # Check if user is already in this group
+        if self.user_is_in_group(group, username=username):
+            return False
+
+        if not self.__config.get(group, None):
             self.__config[group] = {}
 
+        # Add the user to the verified users of the group
+        # if the user_id was passed
         if user_id:
             if self.VERIFIED not in self.__config[group]:
                 self.__config[group][self.VERIFIED] = []
@@ -244,20 +294,18 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         """
         self.__load_config()
 
-        if group not in self.__config:
+        if not self.username_is_verified_in_group(group, username)\
+           and not self.user_is_unverified_in_group(group, username):
             return False
 
-        if not self.user_is_in_group(group, username=username):
-            return False
-
-        if self.VERIFIED in self.__config[group]:
+        if self.username_is_verified_in_group(group, username):
             self.__config[group][self.VERIFIED][:] = [
-                usr for usr in self.__config[group][self.VERIFIED]
+                usr for usr in self.__config.get(group).get(self.VERIFIED)
                 if usr.get("username") != username
             ]
+            self.__save_config()
 
-        if self.UNVERIFIED in self.__config[group] \
-           and username in self.__config[group][self.UNVERIFIED]:
+        if self.user_is_unverified_in_group(group, username):
             self.__config[group][self.UNVERIFIED].remove(username)
 
         self.__clean_config(group=group)

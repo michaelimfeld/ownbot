@@ -18,7 +18,7 @@ setup(
     packages=["ownbot"],
     package_data={"": ["*.md"]},
     install_requires=[
-        "python-telegram-bot==4.0rc1",
+        "python-telegram-bot",
         "PyYAML"
     ],
     include_package_data=True,
