@@ -77,7 +77,7 @@ class AdminCommands(object):  # pylint: disable=too-few-public-methods
             message = "No users registered"
             bot.sendMessage(chat_id=update.message.chat_id, text=message)
 
-        for group, data in config.iteritems():
+        for group, data in config.items():
             message += "*{0}*\n".format(group)
             if data.get("users"):
                 message += "  verified users:\n"
