@@ -32,8 +32,9 @@ class User(object):
         if not self.__group:
             return False
 
-        self.__usermanager.add_user(
-            self.__name, self.__group, user_id=self.__id)
+        self.__usermanager.add_user(self.__name,
+                                    self.__group,
+                                    user_id=self.__id)
         return True
 
     def has_access(self, group):
@@ -57,10 +58,10 @@ class User(object):
             self.save()
             return True
 
-        is_admin = self.__usermanager.verify_user(self.__id,
-                                                  self.__name, "admin")
-        is_in_group = self.__usermanager.verify_user(self.__id,
-                                                     self.__name, group)
+        is_admin = self.__usermanager.verify_user(self.__id, self.__name,
+                                                  "admin")
+        is_in_group = self.__usermanager.verify_user(self.__id, self.__name,
+                                                     group)
         return is_admin or is_in_group
 
     def group_empty(self, group):

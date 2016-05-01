@@ -8,6 +8,7 @@ from telegram.ext import CommandHandler
 from ownbot.auth import requires_usergroup
 from ownbot.usermanager import UserManager
 
+
 class AdminCommands(object):  # pylint: disable=too-few-public-methods
     """
         Provides admin command handlers for user/group
@@ -26,19 +27,14 @@ class AdminCommands(object):  # pylint: disable=too-few-public-methods
     def __register_handlers(self):
         """Registers the admin commands.
         """
-        self.__dispatcher.addHandler(
-            CommandHandler("adminhelp", self.__admin_help)
-        )
-        self.__dispatcher.addHandler(
-            CommandHandler("users", self.__get_users)
-        )
-        self.__dispatcher.addHandler(
-            CommandHandler("adduser", self.__add_user, pass_args=True)
-        )
-        self.__dispatcher.addHandler(
-            CommandHandler("rmuser", self.__rm_user, pass_args=True)
-        )
-
+        self.__dispatcher.addHandler(CommandHandler("adminhelp",
+                                                    self.__admin_help))
+        self.__dispatcher.addHandler(CommandHandler("users", self.__get_users))
+        self.__dispatcher.addHandler(CommandHandler("adduser",
+                                                    self.__add_user,
+                                                    pass_args=True))
+        self.__dispatcher.addHandler(CommandHandler(
+            "rmuser", self.__rm_user, pass_args=True))
 
     @staticmethod
     @requires_usergroup("admin")
@@ -58,7 +54,9 @@ class AdminCommands(object):  # pylint: disable=too-few-public-methods
 /adduser - Adds a user to a group.
 /rmuser - Removes a user from a group.
         """
-        bot.sendMessage(chat_id=update.message.chat_id, text=message,
+
+        bot.sendMessage(chat_id=update.message.chat_id,
+                        text=message,
                         parse_mode=ParseMode.MARKDOWN)
 
     @staticmethod
@@ -93,7 +91,8 @@ class AdminCommands(object):  # pylint: disable=too-few-public-methods
                 for user in data.get("unverified"):
                     message += "    - {0}\n".format(user)
 
-        bot.sendMessage(chat_id=update.message.chat_id, text=message,
+        bot.sendMessage(chat_id=update.message.chat_id,
+                        text=message,
                         parse_mode=ParseMode.MARKDOWN)
 
     @staticmethod

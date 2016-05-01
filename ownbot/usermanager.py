@@ -11,15 +11,9 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         Provides functions to save and load
         ownbot users.
     """
-    CONFIG_DIR_PATH = os.path.join(
-        os.path.expanduser("~"),
-        ".ownbot"
-    )
+    CONFIG_DIR_PATH = os.path.join(os.path.expanduser("~"), ".ownbot")
     USERS_CONF_PATH = os.path.join(
-        os.path.expanduser("~"),
-        ".ownbot",
-        "users.yml"
-    )
+        os.path.expanduser("~"), ".ownbot", "users.yml")
 
     UNVERIFIED = "unverified"
     VERIFIED = "users"
@@ -56,9 +50,7 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
             file.
         """
         with open(self.USERS_CONF_PATH, "w+") as config_file:
-            config_file.write(
-                yaml.dump(self.__config)
-            )
+            config_file.write(yaml.dump(self.__config))
 
     def __clean_config(self, group=None):
         """Removes empty values of keys in config.
@@ -73,7 +65,8 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         unverified_present = self.UNVERIFIED in self.__config[group]
 
         if group:
-            if unverified_present and not self.__config[group][self.UNVERIFIED]:
+            if unverified_present and not self.__config[group][
+                    self.UNVERIFIED]:
                 self.__config[group].pop(self.UNVERIFIED, None)
 
             if verified_present and not self.__config[group][self.VERIFIED]:
@@ -81,7 +74,6 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
 
         if not self.__config[group]:
             self.__config.pop(group, None)
-
 
     @property
     def config(self):
@@ -115,7 +107,8 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         self.__load_config()
 
         user_in_group = [
-            usr for usr in self.__config.get(group, {}).get(self.VERIFIED, [])
+            usr
+            for usr in self.__config.get(group, {}).get(self.VERIFIED, [])
             if usr.get("id") == user_id
         ]
 
@@ -137,7 +130,8 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         self.__load_config()
 
         user_in_group = [
-            usr for usr in self.__config.get(group, {}).get(self.VERIFIED, [])
+            usr
+            for usr in self.__config.get(group, {}).get(self.VERIFIED, [])
             if usr.get("username") == username
         ]
 
@@ -157,7 +151,8 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
                     given group as verified, otherwise False.
         """
         self.__load_config()
-        unverified_users = self.__config.get(group, {}).get(self.UNVERIFIED, [])
+        unverified_users = self.__config.get(group, {}).get(self.UNVERIFIED,
+                                                            [])
         return username in unverified_users
 
     def user_is_in_group(self, group, user_id=None, username=None):
@@ -182,7 +177,8 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         """
         self.__load_config()
 
-        if group not in self.__config or (user_id is None and username is None):
+        if group not in self.__config or (user_id is None and
+                                          username is None):
             return False
 
         if user_id:
@@ -217,16 +213,13 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         if not self.VERIFIED in self.__config[group]:
             self.__config[group][self.VERIFIED] = []
 
-        self.__config[group][self.VERIFIED].append(
-            {
-                "id": user_id,
-                "username": username
-            }
-        )
+        self.__config[group][self.VERIFIED].append({
+            "id": user_id,
+            "username": username
+        })
         self.__clean_config(group=group)
         self.__save_config()
         return True
-
 
     def add_user(self, username, group, user_id=None):
         """
@@ -265,12 +258,10 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
             if self.VERIFIED not in self.__config[group]:
                 self.__config[group][self.VERIFIED] = []
 
-            self.__config[group][self.VERIFIED].append(
-                {
-                    "id": user_id,
-                    "username": username
-                }
-            )
+            self.__config[group][self.VERIFIED].append({
+                "id": user_id,
+                "username": username
+            })
             self.__save_config()
             return True
 
@@ -300,7 +291,8 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
 
         if self.username_is_verified_in_group(group, username):
             self.__config[group][self.VERIFIED][:] = [
-                usr for usr in self.__config.get(group).get(self.VERIFIED)
+                usr
+                for usr in self.__config.get(group).get(self.VERIFIED)
                 if usr.get("username") != username
             ]
             self.__save_config()

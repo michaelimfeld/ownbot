@@ -4,6 +4,7 @@
 from telegram import Bot
 from ownbot.user import User
 
+
 def requires_usergroup(group):
     """Checks if the user has access to the decorated function.
 
@@ -16,6 +17,7 @@ def requires_usergroup(group):
         Returns:
             func: The decorater function.
     """
+
     def decorate(func):
         def call(*args, **kwargs):
             offset = 0
@@ -26,15 +28,17 @@ def requires_usergroup(group):
 
             update = args[1 + offset]
 
-            user = User(
-                update.message.from_user.name,
-                update.message.from_user.id)
+            user = User(update.message.from_user.name,
+                        update.message.from_user.id)
             if not user.has_access(group):
                 return
             result = func(*args, **kwargs)
             return result
+
         return call
+
     return decorate
+
 
 def assign_first_to(group):
     """Checks if the user should be added to the given group.
@@ -48,6 +52,7 @@ def assign_first_to(group):
         Returns:
             func: The decorater function.
     """
+
     def decorate(func):
         def call(*args, **kwargs):
             offset = 0
@@ -59,11 +64,9 @@ def assign_first_to(group):
             bot = args[0 + offset]
             update = args[1 + offset]
 
-            user = User(
-                update.message.from_user.name,
-                user_id=update.message.from_user.id,
-                group=group,
-            )
+            user = User(update.message.from_user.name,
+                        user_id=update.message.from_user.id,
+                        group=group, )
             if user.group_empty(group):
                 user.save()
                 message = "Hello {0}! "\
@@ -76,5 +79,7 @@ def assign_first_to(group):
 
             result = func(*args, **kwargs)
             return result
+
         return call
+
     return decorate
