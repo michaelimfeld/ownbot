@@ -56,6 +56,27 @@ class TestAuth(TestCase):  # pylint: disable=too-many-public-methods
 
             self.assertTrue(called)
 
+    def test_requires_usergroup_self(self):
+        """
+            Test requires usergroup decorator with self as first argument.
+        """
+        with patch("ownbot.auth.User") as user_mock,\
+                patch("test_auth.Update") as update_mock:
+            user_mock = user_mock.return_value
+            user_mock.has_acces.return_value = True
+
+            @requires_usergroup("foo")
+            def my_command_handler(self, bot, update):
+                """Dummy command handler"""
+                print(self, bot, update)
+                return True
+
+            bot_mock = Mock(spec=Bot)
+            update_mock = Update(1337)
+            called = my_command_handler(None, bot_mock, update_mock)
+
+            self.assertTrue(called)
+
     def test_assign_first_to(self):
         """
             Test assign first to decorator.
