@@ -70,6 +70,32 @@ class TestUserManager(TestCase):  # pylint: disable=too-many-public-methods
             self.assertEqual(usrmgr.config, {})
             self.assertTrue(open_mock.called)
 
+    def test_load_config(self):
+        """
+            Test loading of the config attribute
+        """
+        usrmgr = self.__get_dummy_object()
+        with patch("os.path.exists", return_value=True),\
+                patch("ownbot.usermanager.open") as open_mock:
+
+            open_mock.return_value = io.BytesIO(b"""
+foogroup:
+  unverified:
+    - '@foouser'""")
+
+            expected_config = {"foogroup": {"unverified": ["@foouser"]}}
+
+            self.assertEqual(usrmgr.config, expected_config)
+            self.assertTrue(open_mock.called)
+
+    def test_save_config(self):
+        """
+            Test save config
+        """
+        usrmgr = self.__get_dummy_object()
+        with patch("ownbot.usermanager.open"):
+            usrmgr.config = {}
+
     def test_userid_is_verified_grp(self):
         """
             Test user id is verified in group check
