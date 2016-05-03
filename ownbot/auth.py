@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Provides decorator functions for user authentication.
+"""
+    Provides decorator functions for user authentication.
 """
 from telegram import Bot
 from ownbot.user import User

@@ -9,6 +9,7 @@ from telegram import Bot, Update
 
 from ownbot.auth import requires_usergroup, assign_first_to
 
+
 class TestAuth(TestCase):  # pylint: disable=too-many-public-methods
     """
         Provides unit tests for the ownbot.auth module.
