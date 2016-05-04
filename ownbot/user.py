@@ -62,6 +62,7 @@ class User(object):
                                                   "admin")
         is_in_group = self.__usermanager.verify_user(self.__id, self.__name,
                                                      group)
+
         return is_admin or is_in_group
 
     def group_empty(self, group):
@@ -74,24 +75,4 @@ class User(object):
                 bool: True if at least one user is in the given group.
 
         """
-        if not getattr(self, group):
-            return True
-        return False
-
-    def __getattr__(self, name):
-        """Returns a configuration attribute.
-
-            Returns the configuration attribute value from
-            the given key.
-
-            Args:
-                name (str): The attribute's name.
-
-            Returns:
-                str: The attribute's value if it exists,
-                    otherwise an empty str.
-
-        """
-        if not self.__usermanager.config.get(self.__group):
-            return []
-        return self.__usermanager.config.get(self.__group).get("users")
+        return self.__usermanager.group_is_empty(group)

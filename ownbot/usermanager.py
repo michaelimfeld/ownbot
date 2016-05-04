@@ -304,3 +304,19 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         self.__save_config()
 
         return True
+
+    def group_is_empty(self, group):
+        """Checks if given group is empty.
+
+            Checks if the passed group has any users
+            or is completely empty.
+
+            Args:
+                group (str): The group to be checked.
+
+            Returns:
+                bool: True if the group is emtpy, otherwise False.
+        """
+        self.__load_config()
+        self.__config.get(group)
+        return not bool(self.__config.get(group))

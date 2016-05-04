@@ -18,7 +18,7 @@ class TestUserManager(TestCase):  # pylint: disable=too-many-public-methods
     @staticmethod
     def __get_dummy_object():
         """Returns a dummy usermanager object."""
-        with patch("os.path.exists", return_value=True):
+        with patch("os.mkdir"):
             return UserManager()
 
     @staticmethod
@@ -319,3 +319,16 @@ foogroup:
             result = usrmgr.rm_user("@foouser", "foogroup")
             self.assertTrue(result)
             self.assertEquals(usrmgr.config, {})
+
+    def test_group_is_empty(self):
+        """
+            Test group is empty check if group is not empty
+        """
+        usrmgr = self.__get_dummy_object()
+        config = {"foogroup": {"unverified": ["@foouser"]}}
+        self.__set_config(usrmgr, config)
+
+        with patch.object(usrmgr, "_UserManager__load_config"),\
+                patch.object(usrmgr, "_UserManager__save_config"):
+            result = usrmgr.group_is_empty("foogroup")
+            self.assertFalse(result)
