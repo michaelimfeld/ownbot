@@ -1,6 +1,7 @@
 # ownbot
 
 [![Build Status](https://travis-ci.org/michaelimfeld/ownbot.svg?branch=master)](https://travis-ci.org/michaelimfeld/ownbot)
+[![Coverage Status](https://coveralls.io/repos/github/michaelimfeld/ownbot/badge.svg?branch=master)](https://coveralls.io/github/michaelimfeld/ownbot?branch=master)
 
 > Easy to use python module to create private telegram bots.
 
