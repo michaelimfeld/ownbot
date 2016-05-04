@@ -19,10 +19,10 @@ class TestAuth(TestCase):  # pylint: disable=too-many-public-methods
         """
             Test requires usergroup decorator if the user has no access
         """
-        with patch("ownbot.user.User") as user_mock,\
+        with patch("ownbot.auth.User") as user_mock,\
                 patch("test_auth.Update") as update_mock:
             user_mock = user_mock.return_value
-            user_mock.has_acces.return_value = False
+            user_mock.has_access.return_value = False
 
             @requires_usergroup("foo")
             def my_command_handler(bot, update):
