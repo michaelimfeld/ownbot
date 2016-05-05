@@ -33,6 +33,7 @@ def main():
     """
         Simple private telegram bot example.
     """
+    # Set up logging to log to stdout
     import logging
     logging.basicConfig(
         level=logging.DEBUG,
@@ -42,6 +43,8 @@ def main():
     updater = Updater(TOKEN)
     dispatcher = updater.dispatcher
     dispatcher.addHandler(CommandHandler("start", start_handler))
+
+    # Enable admin commands for this bot
     AdminCommands(dispatcher)
 
     updater.start_polling()
