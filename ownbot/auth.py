@@ -2,6 +2,7 @@
 """
     Provides decorator functions for user authentication.
 """
+import logging
 from telegram import Bot
 from ownbot.user import User
 
@@ -21,6 +22,7 @@ def requires_usergroup(group):
 
     def decorate(func):
         def call(*args, **kwargs):
+            log = logging.getLogger(__name__)
             offset = 0
             # Set offset to 1 if first argument is not type of
             # telegram.Bot.
@@ -32,6 +34,11 @@ def requires_usergroup(group):
             user = User(update.message.from_user.name,
                         update.message.from_user.id)
             if not user.has_access(group):
+                log.warn("The user '{0}' with id '{1}' tried to"\
+                         " execute the protected command '{2}'!"
+                         .format(update.message.from_user.name,
+                                 update.message.from_user.id,
+                                 update.message.text))
                 return
             result = func(*args, **kwargs)
             return result
