@@ -73,7 +73,7 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
         update = self.__get_dummy_update()
 
         with patch("ownbot.admincommands.UserManager") as usrmgr_mock:
-            usrmgr_mock.return_value.config.return_value = None
+            usrmgr_mock.return_value.config = {}
             AdminCommands._AdminCommands__get_users(  # pylint: disable=no-member, protected-access
                 bot, update)
         self.assertTrue(bot.sendMessage.called)
