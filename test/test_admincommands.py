@@ -11,11 +11,14 @@ from telegram.ext import Dispatcher
 
 
 # Patch decorators before module load
-def dummy_decorator(*decorator_args):
+def dummy_decorator(*_):
     """Returns a dummy decorator"""
 
     def decorate(func):
+        """Decorator func"""
+
         def call(*args, **kwargs):
+            """Call func"""
             return func(*args, **kwargs)
 
         return call
@@ -42,6 +45,15 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
         message = Message(1, user, datetime.now(), chat)
         return Update(1, message=message)
 
+    def test_init(self):
+        """
+            Test init function of admincommands class
+        """
+        with patch("ownbot.admincommands.UserManager"):
+            dispatcher = Mock(spec=Dispatcher)
+            AdminCommands(dispatcher)
+            self.assertTrue(dispatcher.addHandler.called)
+
     def test_admin_help(self):
         """
             Test admin help command
@@ -49,8 +61,8 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
         bot = Mock(spec=Bot)
         update = self.__get_dummy_update()
 
-        AdminCommands._AdminCommands__admin_help(
-            bot, update)  # pylint: disable=no-member
+        AdminCommands._AdminCommands__admin_help(  # pylint: disable=no-member, protected-access
+            bot, update)
         self.assertTrue(bot.sendMessage.called)
 
     def test_get_users_no_config(self):
@@ -60,10 +72,10 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
         bot = Mock(spec=Bot)
         update = self.__get_dummy_update()
 
-        with patch("ownbot.usermanager.UserManager") as usrmgr_mock:
+        with patch("ownbot.admincommands.UserManager") as usrmgr_mock:
             usrmgr_mock.return_value.config.return_value = None
-            AdminCommands._AdminCommands__get_users(
-                bot, update)  # pylint: disable=no-member
+            AdminCommands._AdminCommands__get_users(  # pylint: disable=no-member, protected-access
+                bot, update)
         self.assertTrue(bot.sendMessage.called)
 
     def test_get_users(self):
@@ -77,9 +89,9 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
             config = {"foogroup": {"users": [{"id": 1337,
                                               "username": "@foouser"}],
                                    "unverified": ["@baruser"]}}
-            usrmgr_mock.return_value.config.return_value = config
-            AdminCommands._AdminCommands__get_users(
-                bot, update)  # pylint: disable=no-member
+            usrmgr_mock.return_value.config = config
+            AdminCommands._AdminCommands__get_users(  # pylint: disable=no-member, protected-access
+                bot, update)
         self.assertTrue(bot.sendMessage.called)
 
     def test_adduser_no_args(self):
@@ -89,7 +101,8 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
         bot = Mock(spec=Bot)
         update = self.__get_dummy_update()
 
-        AdminCommands._AdminCommands__add_user(bot, update, [])
+        AdminCommands._AdminCommands__add_user(  # pylint: disable=no-member, protected-access
+            bot, update, [])
         bot.sendMessage.assert_called_with(
             chat_id=1, text="Usage: adduser <user> <group>")
 
@@ -102,8 +115,8 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
 
         with patch("ownbot.admincommands.UserManager") as usrmgr_mock:
             usrmgr_mock.return_value.add_user.return_value = False
-            AdminCommands._AdminCommands__add_user(bot, update, ["@foouser",
-                                                                 "foogroup"])
+            AdminCommands._AdminCommands__add_user(  # pylint: disable=no-member, protected-access
+                bot, update, ["@foouser", "foogroup"])
             bot.sendMessage.assert_called_with(
                 chat_id=1,
                 text="The user '@foouser' is already in the group 'foogroup'!")
@@ -117,8 +130,8 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
 
         with patch("ownbot.admincommands.UserManager") as usrmgr_mock:
             usrmgr_mock.return_value.add_user.return_value = True
-            AdminCommands._AdminCommands__add_user(bot, update, ["@foouser",
-                                                                 "foogroup"])
+            AdminCommands._AdminCommands__add_user(  # pylint: disable=no-member, protected-access
+                bot, update, ["@foouser", "foogroup"])
         bot.sendMessage.assert_called_with(
             chat_id=1,
             text="Added user '@foouser' to the group 'foogroup'.")
@@ -130,7 +143,8 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
         bot = Mock(spec=Bot)
         update = self.__get_dummy_update()
 
-        AdminCommands._AdminCommands__rm_user(bot, update, [])
+        AdminCommands._AdminCommands__rm_user(  # pylint: disable=no-member, protected-access
+            bot, update, [])
 
         bot.sendMessage.assert_called_with(chat_id=1,
                                            text="Usage: rmuser <user> <group>")
@@ -144,8 +158,8 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
 
         with patch("ownbot.admincommands.UserManager") as usrmgr_mock:
             usrmgr_mock.return_value.rm_user.return_value = False
-            AdminCommands._AdminCommands__rm_user(bot, update,
-                                                  ["@foouser", "foogroup"])
+            AdminCommands._AdminCommands__rm_user(  # pylint: disable=no-member, protected-access
+                bot, update, ["@foouser", "foogroup"])
             bot.sendMessage.assert_called_with(
                 chat_id=1,
                 text="The user '@foouser' could not"\
@@ -160,8 +174,8 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
 
         with patch("ownbot.admincommands.UserManager") as usrmgr_mock:
             usrmgr_mock.return_value.rm_user.return_value = True
-            AdminCommands._AdminCommands__rm_user(bot, update,
-                                                  ["@foouser", "foogroup"])
+            AdminCommands._AdminCommands__rm_user(  # pylint: disable=no-member, protected-access
+                bot, update, ["@foouser", "foogroup"])
             bot.sendMessage.assert_called_with(
                 chat_id=1,
                 text="Removed user '@foouser' from the group 'foogroup'.")
