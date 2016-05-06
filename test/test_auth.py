@@ -2,37 +2,46 @@
 """
     Provides a unit test class for the ownbot.auth module.
 """
+from datetime import datetime
 from unittest import TestCase
 from mock import patch, Mock
 
-from telegram import Bot, Update
+from telegram import Bot, Update, User, Chat, Message
 
-from ownbot.auth import requires_usergroup, assign_first_to
+import ownbot.auth
+# Is needed otherwise the decorators would be patched
+# by the test_admincommands' dummy decorator.
+reload(ownbot.auth)
 
 
 class TestAuth(TestCase):  # pylint: disable=too-many-public-methods
     """
         Provides unit tests for the ownbot.auth module.
     """
+    @staticmethod
+    def __get_dummy_update():
+        """Returns a dummy update instance"""
+        user = User(1337, "@foouser")
+        chat = Chat(1, None)
+        message = Message(1, user, datetime.now(), chat)
+        return Update(1, message=message)
 
     def test_requires_usergroup_no_acc(self):
         """
             Test requires usergroup decorator if the user has no access
         """
-        with patch("ownbot.auth.User") as user_mock,\
-                patch("test_auth.Update") as update_mock:
-            user_mock = user_mock.return_value
-            user_mock.has_access.return_value = False
+        with patch("ownbot.auth.User") as user_mock:
+            user_mock.return_value.has_access.return_value = False
 
-            @requires_usergroup("foo")
+            @ownbot.auth.requires_usergroup("foo")
             def my_command_handler(bot, update):
                 """Dummy command handler"""
                 print(bot, update)
                 return True
 
             bot_mock = Mock(spec=Bot)
-            update_mock = Update(1337)
-            called = my_command_handler(bot_mock, update_mock)
+            update = self.__get_dummy_update()
+            called = my_command_handler(bot_mock, update)
 
             self.assertIsNone(called)
 
@@ -45,7 +54,7 @@ class TestAuth(TestCase):  # pylint: disable=too-many-public-methods
             user_mock = user_mock.return_value
             user_mock.has_acces.return_value = True
 
-            @requires_usergroup("foo")
+            @ownbot.auth.requires_usergroup("foo")
             def my_command_handler(bot, update):
                 """Dummy command handler"""
                 print(bot, update)
@@ -66,7 +75,7 @@ class TestAuth(TestCase):  # pylint: disable=too-many-public-methods
             user_mock = user_mock.return_value
             user_mock.has_acces.return_value = True
 
-            @requires_usergroup("foo")
+            @ownbot.auth.requires_usergroup("foo")
             def my_command_handler(self, bot, update):
                 """Dummy command handler"""
                 print(self, bot, update)
@@ -88,7 +97,7 @@ class TestAuth(TestCase):  # pylint: disable=too-many-public-methods
             user_mock = user_mock.return_value
             user_mock.group_empty.return_value = True
 
-            @assign_first_to("foo")
+            @ownbot.auth.assign_first_to("foo")
             def my_command_handler(bot, update):
                 """Dummy command handler"""
                 print(bot, update)
@@ -109,7 +118,7 @@ class TestAuth(TestCase):  # pylint: disable=too-many-public-methods
             user_mock = user_mock.return_value
             user_mock.group_empty.return_value = False
 
-            @assign_first_to("foo")
+            @ownbot.auth.assign_first_to("foo")
             def my_command_handler(bot, update):
                 """Dummy command handler"""
                 print(bot, update)
@@ -130,7 +139,7 @@ class TestAuth(TestCase):  # pylint: disable=too-many-public-methods
             user_mock = user_mock.return_value
             user_mock.group_empty.return_value = True
 
-            @assign_first_to("foo")
+            @ownbot.auth.assign_first_to("foo")
             def my_command_handler(self, bot, update):
                 """Dummy command handler"""
                 print(self, bot, update)
