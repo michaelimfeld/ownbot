@@ -7,7 +7,7 @@ from telegram import Bot
 from ownbot.user import User
 
 
-def requires_usergroup(group):
+def requires_usergroup(*decorator_args):
     """Checks if the user has access to the decorated function.
 
         Checks if the user who sent the message is in the given
@@ -23,23 +23,29 @@ def requires_usergroup(group):
     def decorate(func):
         def call(*args, **kwargs):
             log = logging.getLogger(__name__)
-            offset = 0
+
             # Set offset to 1 if first argument is not type of
-            # telegram.Bot.
+            # telegram.Bot (self passed).
+            offset = 0
             if not isinstance(args[0], Bot):
                 offset = 1
-
             update = args[1 + offset]
 
-            user = User(update.message.from_user.name,
-                        update.message.from_user.id)
-            if not user.has_access(group):
+            username = update.message.from_user.name
+            userid = update.message.from_user.id
+            message = update.message.text
+            user = User(username, userid)
+
+            has_access = False
+            for group in decorator_args:
+                has_access = user.has_access(group) if not has_access else True
+
+            if not has_access:
                 log.warn("The user '{0}' with id '{1}' tried to"\
                          " execute the protected command '{2}'!"
-                         .format(update.message.from_user.name,
-                                 update.message.from_user.id,
-                                 update.message.text))
+                         .format(username, userid, message))
                 return
+
             result = func(*args, **kwargs)
             return result
 

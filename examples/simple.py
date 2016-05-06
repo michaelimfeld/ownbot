@@ -18,9 +18,9 @@ TOKEN = open("token.txt").read().strip()
 # to the admin group.
 @assign_first_to("admin")
 # If a user wants to execute the '/start' command he has to be
-# a member of the 'user' group. Otherwise the decorator will not
-# execute the handler function.
-@requires_usergroup("user")
+# a member of the 'group1'or the 'group2' group. Otherwise the
+# decorator will not execute the handler function.
+@requires_usergroup("group1", "group2")
 def start_handler(bot, update):
     """Handles the command '/start'.
 
