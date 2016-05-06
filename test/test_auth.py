@@ -5,6 +5,7 @@
 from datetime import datetime
 from unittest import TestCase
 from mock import patch, Mock
+from imp import reload
 
 from telegram import Bot, Update, User, Chat, Message
 
