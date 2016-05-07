@@ -22,30 +22,23 @@ setup(
         "PyYAML"
     ],
     include_package_data=True,
+    keywords=[
+        "ownbot", "python",
+        "telegram", "bot"
+    ],
     classifiers=[
-        "Development Status :: 4 - Beta",
-        "Environment :: Console",
-        "Intended Audience :: Developers",
-        "Intended Audience :: Education",
-        "Intended Audience :: Other Audience",
-        "License :: OSI Approved :: MIT License",
-        "Natural Language :: English",
-        "Operating System :: MacOS :: MacOS X",
-        "Operating System :: OS Independent",
-        "Operating System :: Microsoft :: Windows",
-        "Operating System :: Microsoft :: Windows :: Windows 7",
-        "Operating System :: Microsoft :: Windows :: Windows XP",
-        "Operating System :: POSIX",
-        "Operating System :: POSIX :: Linux",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: Implementation",
+        "Operating System :: OS Independent",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Education",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
         "Topic :: Education :: Testing",
         "Topic :: Software Development",
-        "Topic :: Software Development :: Testing"
-    ],
+    ]
 )
