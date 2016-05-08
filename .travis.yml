@@ -11,3 +11,14 @@ install:
   - pip install tox && pip install tox-travis
 
 script: tox
+
+deploy:
+    # production pypi
+  - provider: pypi
+    distributions: sdist
+    user: "michaelimfeld"
+    password:
+      secure: "VcyqzmZW9MyRVJwGBxEUq0/uOPc+zWHB9GWKHJNcu+REdGfHp4iZuwUTVXSTEUVojaCrTy3TqUefollDgbmrhG2V5YCCMAxSWxo3tolgiKtMRGj+s/GWziXwiqpEPpWSfEvDSxGRA87LSG/8kVGPa5mD3iSDlWVVYyJuQ9MgtklstYR7kXgWB3JAsluXn1r392ChmEgn5Gl0knJrpJTkvKgqqkTmc4EzIYv6VuxSMjmZbd9FO378fOyv3FhjfbCktDy2dKw72juG2nr61YEi2jzY3IUBmpo4LLgzEtsa/WGl7/dFQMcEXOJOdVPMjp6CahLZCqb57Wd07JADUTMYbx/R7KL86MNFFCfeY8Lwl8GLE3Xi1VXzTg4LSBtc34hxO9icUY4c903KJXxr1KNdCFGmX8JXPKl1lZysEDc65fCG6wVkyn7oLxesD6TiLpjrvt8zF/gHJBca7qANIeLy25Gz5F0Dz+6tsXPpCGicwC5ky1GSLWAcDlbtS5p2APeMDKZtC3SJE5vA0QchTE/d4A+6f2zam4xUiTIKWDv10NV+/nbkfu8ZZYEXpCkvQLmWld0XG5XTkKO+lQh+BvuyuPVG5p5tmcLO7AY125GMXYh03N/n+YLrOIPAmnz5T9bGopa1ULrPSp/2qU0B4yIKJ1jWgXZjrD2gtnea/E61ANk="
+    on:
+      branch: master
+      tags: true
