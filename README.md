@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/michaelimfeld/ownbot.svg?branch=master)](https://travis-ci.org/michaelimfeld/ownbot)
 [![Coverage Status](https://coveralls.io/repos/github/michaelimfeld/ownbot/badge.svg?branch=master)](https://coveralls.io/github/michaelimfeld/ownbot?branch=master)
+[![PyPI version](https://badge.fury.io/py/ownbot.svg)](https://badge.fury.io/py/ownbot)
 
 > Easy to use python module to create private telegram bots.
 
@@ -10,8 +11,7 @@ Ownbot provides some cool decorators to protect your command handler functions f
 
 ## Install
 ```shell
-git clone https://github.com/michaelimfeld/ownbot.git
-pip install .
+pip install ownbot
 ```
 
 ## Get Started
