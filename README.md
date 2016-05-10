@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/michaelimfeld/ownbot/badge.svg?branch=master)](https://coveralls.io/github/michaelimfeld/ownbot?branch=master)
 [![PyPI version](https://badge.fury.io/py/ownbot.svg)](https://badge.fury.io/py/ownbot)
 
-> Easy to use python module to create private telegram bots.
+> Easy to use python module to create private telegram bots using [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot).
 
 Ownbot provides some cool decorators to protect your command handler functions from unauthorized users!
 
@@ -34,6 +34,9 @@ Obviously if a user is in the `admin` group he has also access to functions whic
 ## How It Works
 Ownbot saves new users added by Telegram username as unverified users. On first contact, when the user sends his first message to the bot, ownbot will store the user with his unique id as a verified user. A verified user will from now on always have access to his group even if he changes his username. The authorization checks are done only on the unique Telegram `user_id`! Sounds good right?
 
+## Storage
+For user/group storage ownbot uses a simple yaml file, which can be found in `$HOMEDIR/.ownbot/users.yml`. This file can be edited manually, but it is recommended to use the `AdminCommands` to add or remove users from groups.
+
 ## Admin Commands
 
 The admin commands can be enabled by simply instantiating the `AdminCommands`
@@ -49,11 +52,9 @@ AdminCommands(dispatcher)
 
 If the admin commands are enabled, a user who is in the `admin` group is able to perform the following actions:
 
-| Command    | Arguments  | Description                         |
-|------------|------------|-------------------------------------|
-| /adminhelp | -          | Shows a list of available commands. |
-| /users     | -          | Shows all registered users.         |
-| /adduser   | user group | Adds a user to a group.             |
-| /rmuser    | user group | Removes a user from a group.        |
-
-Work in progress ...
+| Command    | Arguments  | Description                           |
+|------------|------------|---------------------------------------|
+| /adminhelp | -          | Shows a list of available commands.   |
+| /users     | -          | Shows a list of all registered users. |
+| /adduser   | user group | Adds a user to a group.               |
+| /rmuser    | user group | Removes a user from a group.          |
