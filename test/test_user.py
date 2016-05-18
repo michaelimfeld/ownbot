@@ -56,12 +56,3 @@ class TestUser(TestCase):  # pylint: disable=too-many-public-methods
         usrmgr_mock.return_value.verify_user.return_value = False
         with patch.object(user, "save"):
             user.has_access("foogroup")
-
-    def test_group_empty(self):
-        """
-            Test group empty check
-        """
-        user, usrmgr_mock = self.__get_test_instance("@foouser", 1337)
-        usrmgr_mock.return_value.group_is_empty.return_value = True
-        self.assertTrue(user.group_empty("foogroup"))
-        self.assertTrue(usrmgr_mock.return_value.group_is_empty.called)

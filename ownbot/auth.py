@@ -5,6 +5,7 @@
 import logging
 from telegram import Bot
 from ownbot.user import User
+from ownbot.usermanager import UserManager
 
 
 def requires_usergroup(*decorator_args):
@@ -81,7 +82,7 @@ def assign_first_to(group):
             user = User(update.message.from_user.name,
                         user_id=update.message.from_user.id,
                         group=group, )
-            if user.group_empty(group):
+            if UserManager().group_is_empty(group):
                 user.save()
                 message = "Hello {0}! "\
                         "You have been added to the '{1}' group."\

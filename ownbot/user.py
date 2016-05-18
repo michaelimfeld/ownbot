@@ -64,15 +64,3 @@ class User(object):
                                                      group)
 
         return is_admin or is_in_group
-
-    def group_empty(self, group):
-        """Checks if the given group contains any users.
-
-            Checks if there's at least one user, which is member of the
-            given group.
-
-            Returns:
-                bool: True if at least one user is in the given group.
-
-        """
-        return self.__usermanager.group_is_empty(group)
