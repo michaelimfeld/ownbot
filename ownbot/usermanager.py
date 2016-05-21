@@ -107,8 +107,7 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         self.__load_config()
 
         user_in_group = [
-            usr
-            for usr in self.__config.get(group, {}).get(self.VERIFIED, [])
+            usr for usr in self.__config.get(group, {}).get(self.VERIFIED, [])
             if usr.get("id") == user_id
         ]
 
@@ -130,8 +129,7 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         self.__load_config()
 
         user_in_group = [
-            usr
-            for usr in self.__config.get(group, {}).get(self.VERIFIED, [])
+            usr for usr in self.__config.get(group, {}).get(self.VERIFIED, [])
             if usr.get("username") == username
         ]
 
@@ -291,8 +289,7 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
 
         if self.username_is_verified_in_group(group, username):
             self.__config[group][self.VERIFIED][:] = [
-                usr
-                for usr in self.__config.get(group).get(self.VERIFIED)
+                usr for usr in self.__config.get(group).get(self.VERIFIED)
                 if usr.get("username") != username
             ]
             self.__save_config()
@@ -320,3 +317,19 @@ class UserManager(object):  # pylint: disable=too-few-public-methods
         self.__load_config()
         self.__config.get(group)
         return not bool(self.__config.get(group))
+
+    def get_users(self, group):
+        """Get all users from given group.
+
+            Returns a list of all verified users
+            from the given group.
+
+            Args:
+                group (str): The group.
+
+            Returns:
+                list: Verified users from given group.
+        """
+        self.__load_config()
+        group = self.__config.get(group, {})
+        return group.get(self.VERIFIED, [])

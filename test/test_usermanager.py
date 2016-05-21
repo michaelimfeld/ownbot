@@ -332,3 +332,17 @@ foogroup:
                 patch.object(usrmgr, "_UserManager__save_config"):
             result = usrmgr.group_is_empty("foogroup")
             self.assertFalse(result)
+
+    def test_get_users(self):
+        """
+            Test get users
+        """
+        usrmgr = self.__get_dummy_object()
+        config = {"foogroup": {"users": [{"id": 1337,
+                                          "username": "@foouser"}]}}
+        self.__set_config(usrmgr, config)
+
+        with patch.object(usrmgr, "_UserManager__load_config"),\
+                patch.object(usrmgr, "_UserManager__save_config"):
+            result = usrmgr.get_users("foogroup")
+            self.assertEqual(result, [{"id": 1337, "username": "@foouser"}])

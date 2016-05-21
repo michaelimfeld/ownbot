@@ -19,6 +19,7 @@ class TestAuth(TestCase):  # pylint: disable=too-many-public-methods
     """
         Provides unit tests for the ownbot.auth module.
     """
+
     @staticmethod
     def __get_dummy_update():
         """Returns a dummy update instance"""
