@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """Provides a simple private telegram bot example.
 
-    Provides an example telegram-bot using the
-    authentication decorators from private-telegram-bot.
+    Provides an example telegram-bot using
+    ownbot's authentication decorators.
 """
 
 from telegram.ext import Updater, CommandHandler
