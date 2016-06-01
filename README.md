@@ -16,8 +16,7 @@ pip install ownbot
 
 ## Get Started
 
-  - The `assign_first_to` decorator adds the first user who invokes the handler method to the specified group.
-  - The second decorator `requires_usergroup` lets you define which usergroups will have permission to access the handler command.
+Simply add the `requires_usergroup` decorator to your handler function! That's it!
 
 ```python
 from ownbot.auth import requires_usergroup, assign_first_to
@@ -29,7 +28,10 @@ def start_handler(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text="Hello World")
 ```
 
-Obviously if a user is in the `admin` group he has also access to functions which are protected with the `@requires_usergroup("user")` decorator. If a group passed to this decorator does not already exist, it will be automatically created.
+  - The `assign_first_to` decorator adds the first user who invokes the handler method to the specified group.
+  - The second decorator `requires_usergroup` lets you define which usergroups will have permission to access the handler command.
+
+Obviously `admin` users have access to all protected commands. If a group passed to the `requires_usergroup` decorator does not already exist, it will be created.
 
 ## How It Works
 Ownbot saves new users added by Telegram username as unverified users. On first contact, when the user sends his first message to the bot, ownbot will store the user with his unique id as a verified user. A verified user will from now on always have access to his group even if he changes his username. The authorization checks are done only on the unique Telegram `user_id`! Sounds good right?
