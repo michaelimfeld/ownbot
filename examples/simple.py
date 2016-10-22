@@ -42,7 +42,7 @@ def main():
 
     updater = Updater(TOKEN)
     dispatcher = updater.dispatcher
-    dispatcher.addHandler(CommandHandler("start", start_handler))
+    dispatcher.add_handler(CommandHandler("start", start_handler))
 
     # Enable admin commands for this bot
     AdminCommands(dispatcher)

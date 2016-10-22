@@ -52,7 +52,7 @@ class TestAdminCommands(TestCase):  # pylint: disable=too-many-public-methods
         with patch("ownbot.admincommands.UserManager"):
             dispatcher = Mock(spec=Dispatcher)
             AdminCommands(dispatcher)
-            self.assertTrue(dispatcher.addHandler.called)
+            self.assertTrue(dispatcher.add_handler.called)
 
     def test_admin_help(self):
         """

@@ -25,15 +25,16 @@ class AdminCommands(object):  # pylint: disable=too-few-public-methods
         self.__register_handlers()
 
     def __register_handlers(self):
-        """Registers the admin commands.
         """
-        self.__dispatcher.addHandler(CommandHandler("adminhelp",
-                                                    self.__admin_help))
-        self.__dispatcher.addHandler(CommandHandler("users", self.__get_users))
-        self.__dispatcher.addHandler(CommandHandler("adduser",
-                                                    self.__add_user,
-                                                    pass_args=True))
-        self.__dispatcher.addHandler(CommandHandler(
+            Registers the admin commands.
+        """
+        self.__dispatcher.add_handler(CommandHandler("adminhelp",
+                                                     self.__admin_help))
+        self.__dispatcher.add_handler(CommandHandler("users", self.__get_users))
+        self.__dispatcher.add_handler(CommandHandler("adduser",
+                                                     self.__add_user,
+                                                     pass_args=True))
+        self.__dispatcher.add_handler(CommandHandler(
             "rmuser", self.__rm_user, pass_args=True))
 
     @staticmethod
