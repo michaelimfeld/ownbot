@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name="ownbot",
-    version="0.0.3",
+    version="0.0.4",
     license="MIT",
     description="Python module to create private telegram bots.",
     author="Michael Imfeld",
